@@ -1,0 +1,439 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id                   Int     @id @default(autoincrement())
+  first_name           String
+  last_name            String
+  phone                String  @unique
+  username             String? @unique
+  email                String  @unique
+  password_hash        String
+  is_creator           Boolean @default(false)
+  refresh_token_hashed String?
+  image_url            String?
+  events               Event[]
+
+  @@map("admins")
+}
+
+enum Role {
+  COACH  @map("coach")
+  PARENT @map("parent")
+  PLAYER @map("player")
+}
+
+model User {
+  id                   Int                 @id @default(autoincrement())
+  first_name           String
+  last_name            String?
+  email                String              @unique
+  password_hash        String
+  role                 Role
+  phone                String              @unique
+  registration_date    DateTime            @default(now())
+  last_login           DateTime?
+  is_active            Boolean             @default(false)
+  verification         String?             @unique
+  refresh_token_hashed String?
+  image_url            String?
+  player               Player?             @relation("UserPlayer")
+  parent               Parent?             @relation("UserParent")
+  coach                Coach?              @relation("UserCoach")
+  eventRegistrations   EventRegistration[]
+
+  @@map("users")
+}
+
+enum PreferredFoot {
+  LEFT  @map("left")
+  RIGHT @map("right")
+  BOTH  @map("both")
+}
+
+enum MainPosition {
+  GOALKEEPER @map("goalkeeper")
+  DEFENDER   @map("defender")
+  MIDFIELD   @map("midfield")
+  FORWARD    @map("forward")
+}
+
+model Player {
+  id               Int               @id @default(autoincrement())
+  user             User              @relation("UserPlayer", fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int               @unique
+  Team             Team?             @relation("TeamPlayer", fields: [teamId], references: [id])
+  teamId           Int?
+  date_of_birth    DateTime
+  height           Decimal
+  weight           Decimal
+  preferred_foot   PreferredFoot
+  medical_notes    String
+  main_position    MainPosition
+  playerParents    PlayerParent[]
+  medicalRecords   MedicalRecord[]
+  skillEvaluations SkillEvaluation[]
+  feedbacks        Feedback[]
+  badges           Badge[]
+  playerEquipments PlayerEquipment[]
+  playerStats      PlayerStat[]
+  attendances      Attendance[]
+
+  @@map("players")
+}
+
+model Team {
+  id               Int               @id @default(autoincrement())
+  name             String            @unique
+  age_group        String
+  players          Player[]          @relation("TeamPlayer")
+  coachTeams       CoachTeam[]
+  trainingSessions TrainingSession[]
+  teamEquipments   TeamEquipment[]
+  matches          Match[]
+
+  @@map("teams")
+}
+
+model Parent {
+  id                Int            @id @default(autoincrement())
+  user              User           @relation("UserParent", fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int            @unique
+  occupation        String
+  emergency_contact String
+  playerParents     PlayerParent[]
+  feedbacks         Feedback[]
+
+  @@map("parents")
+}
+
+enum Relationship {
+  FATHER  @map("father")
+  MOTHER  @map("mother")
+  SPONSOR @map("sponsor")
+}
+
+model PlayerParent {
+  id           Int          @id @default(autoincrement())
+  Parents      Parent?      @relation(fields: [parentsId], references: [id])
+  parentsId    Int?
+  Player       Player?      @relation(fields: [playerId], references: [id])
+  playerId     Int?
+  relationship Relationship
+
+  @@map("Player_parent")
+}
+
+enum CoachSpecialization {
+  GOALKEEPING_COACH         @map("Goalkeeping Coach")
+  FITNESS_TRAINER           @map("Fitness Trainer")
+  YOUTH_DEVELOPMENT         @map("Youth Development")
+  TACTICAL_ANALYST          @map("Tactical Analyst")
+  TECHNICAL_SKILLS          @map("Technical Skills")
+  REHABILITATION_SPECIALIST @map("Rehabilitation Specialist")
+  SCOUTING_MANAGER          @map("Scouting Manager")
+}
+
+model Coach {
+  id               Int                 @id @default(autoincrement())
+  user             User                @relation("UserCoach", fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int                 @unique
+  license_number   String
+  specialization   CoachSpecialization
+  hire_date        DateTime
+  skillEvaluations SkillEvaluation[]
+  feedbacks        Feedback[]
+  badges           Badge[]
+  coachTeams       CoachTeam[]
+  trainingSessions TrainingSession[]
+  trainingVideos   TrainingVideo[]
+  attendances      Attendance[]
+
+  @@map("coaches")
+}
+
+model CoachTeam {
+  id      Int     @id @default(autoincrement())
+  Coach   Coach?  @relation(fields: [coachId], references: [id])
+  coachId Int?
+  Team    Team?   @relation(fields: [teamId], references: [id])
+  teamId  Int?
+  is_main Boolean @default(false)
+
+  @@map("coache_team")
+}
+
+enum RecoveryStatus {
+  ACTIVE    @map("active")
+  RECOVERED @map("recovered")
+  CHRONIC   @map("chronic")
+}
+
+model MedicalRecord {
+  id              Int            @id @default(autoincrement())
+  Player          Player?        @relation(fields: [playerId], references: [id])
+  playerId        Int
+  injury_type     String
+  diagnosis_date  DateTime       @default(now())
+  recovery_status RecoveryStatus
+  doctor_notes    String
+
+  @@map("medical_records")
+}
+
+model SkillCategory {
+  id          Int     @id @default(autoincrement())
+  name        String //'technical' 'physical' 'tactical' 'mental'
+  description String
+  skills      Skill[]
+
+  @@map("skillCategories")
+}
+
+model Skill {
+  id               Int               @id @default(autoincrement())
+  name             String
+  SkillCategory    SkillCategory?    @relation(fields: [skillCategoryId], references: [id])
+  skillCategoryId  Int?
+  max_score        Int
+  skillEvaluations SkillEvaluation[]
+
+  @@map("skills")
+}
+
+model SkillEvaluation {
+  id              Int      @id @default(autoincrement())
+  Skill           Skill?   @relation(fields: [skillId], references: [id])
+  skillId         Int?
+  Coach           Coach?   @relation(fields: [coachId], references: [id])
+  coachId         Int?
+  Player          Player?  @relation(fields: [playerId], references: [id])
+  playerId        Int?
+  score           Int
+  evaluation_date DateTime @default(now())
+  notes           String
+
+  @@map("skill_evaluations")
+}
+
+model Feedback {
+  id            Int      @id @default(autoincrement())
+  Coach         Coach?   @relation(fields: [coachId], references: [id])
+  coachId       Int?
+  Parent        Parent?  @relation(fields: [parentId], references: [id])
+  parentId      Int?
+  Player        Player?  @relation(fields: [playerId], references: [id])
+  playerId      Int?
+  feedback_text String
+  feedback_date DateTime @default(now())
+
+  @@map("feedbacks")
+}
+
+enum BadgeType {
+  TOP_SCORER    @map("top scorer")
+  BEST_ATTITUDE @map("best attitude")
+  SKILL_MASTER  @map("skill master")
+}
+
+model Badge {
+  id Int @id @default(autoincrement())
+
+  Player       Player?   @relation(fields: [playerId], references: [id])
+  playerId     Int?
+  badge_type   BadgeType
+  Coach        Coach?    @relation(fields: [coachId], references: [id])
+  coachId      Int?
+  awarded_date DateTime
+  image_url    String?
+
+  @@map("badges")
+}
+
+model TrainingSession {
+  id               Int             @id @default(autoincrement())
+  Team             Team?           @relation(fields: [teamId], references: [id])
+  teamId           Int?
+  Coach            Coach?          @relation(fields: [coachId], references: [id])
+  coachId          Int?
+  session_date     DateTime
+  duration_minutes Int
+  location         String
+  objectives       String
+  trainingVideos   TrainingVideo[]
+  attendances      Attendance[]
+
+  @@map("training_sessions")
+}
+
+model TrainingVideo {
+  id                Int              @id @default(autoincrement())
+  TrainingSession   TrainingSession? @relation(fields: [trainingSessionId], references: [id])
+  trainingSessionId Int?
+  Coach             Coach?           @relation(fields: [coachId], references: [id])
+  coachId           Int?
+  video_url         String
+  tags              Json?
+  analysis_report   String?
+  createdAt         DateTime         @default(now())
+
+  @@map("training_videos")
+}
+
+enum AttendanceStatus {
+  PRESENT @map("present")
+  ABSENT  @map("preabsentsent")
+  EXCUSED @map("excused")
+}
+
+model Attendance {
+  id                Int              @id @default(autoincrement())
+  TrainingSession   TrainingSession? @relation(fields: [trainingSessionId], references: [id])
+  trainingSessionId Int?
+  Player            Player?          @relation(fields: [playerId], references: [id])
+  playerId          Int?
+  status            AttendanceStatus
+  Coach             Coach?           @relation(fields: [coachId], references: [id])
+  coachId           Int?
+  marked_at         DateTime         @default(now())
+  excused_minutes   Int?
+
+  @@map("attendances")
+}
+
+enum EquipmentStatus {
+  GOOD         @map("good")
+  NEEDS_REPAIR @map("needs repair")
+  DISPOSED     @map("disposed")
+}
+
+model Equipment {
+  id               Int               @id @default(autoincrement())
+  name             String
+  quantity         Int
+  last_maintenance DateTime
+  status           EquipmentStatus
+  teamEquipments   TeamEquipment[]
+  playerEquipments PlayerEquipment[]
+
+  @@map("equipments")
+}
+
+model TeamEquipment {
+  id          Int        @id @default(autoincrement())
+  Team        Team?      @relation(fields: [teamId], references: [id])
+  teamId      Int?
+  Equipment   Equipment? @relation(fields: [equipmentId], references: [id])
+  equipmentId Int?
+  count       Int
+
+  @@map("team_equipments")
+}
+
+model PlayerEquipment {
+  id          Int        @id @default(autoincrement())
+  Player      Player?    @relation(fields: [playerId], references: [id])
+  playerId    Int?
+  Equipment   Equipment? @relation(fields: [equipmentId], references: [id])
+  equipmentId Int?
+  count       Int
+
+  @@map("player_equipments")
+}
+
+enum MatchResult {
+  WIN  @map("win")
+  DRAW @map("draw")
+  LOSS @map("loss")
+}
+
+model Match {
+  id            Int          @id @default(autoincrement())
+  Team          Team?        @relation(fields: [teamId], references: [id])
+  teamId        Int?
+  opponent_team String
+  match_date    DateTime
+  location      String
+  result        MatchResult?
+  score         String?
+  formation     String?
+  playerStats   PlayerStat[]
+
+  @@map("matches")
+}
+
+model Position {
+  id               Int          @id @default(autoincrement())
+  name             String       @unique
+  description      String
+  parentPositionId Int?
+  parentPosition   Position?    @relation("PositionHierarchy", fields: [parentPositionId], references: [id])
+  childPositions   Position[]   @relation("PositionHierarchy")
+  playerStats      PlayerStat[]
+
+  @@map("positions")
+}
+
+model PlayerStat {
+  id              Int       @id @default(autoincrement())
+  Player          Player?   @relation(fields: [playerId], references: [id])
+  playerId        Int?
+  Match           Match?    @relation(fields: [matchId], references: [id])
+  matchId         Int?
+  goals           Int       @default(0)
+  assists         Int       @default(0)
+  tackles         Int       @default(0)
+  passes_accuracy Decimal?
+  yellow_cards    Int       @default(0)
+  red_card        Boolean   @default(false)
+  Position        Position? @relation(fields: [positionId], references: [id])
+  positionId      Int?
+
+  @@map("player_stats")
+}
+
+model Event {
+  id                 Int                 @id @default(autoincrement())
+  title              String
+  Admin              Admin?              @relation(fields: [adminId], references: [id])
+  adminId            Int?
+  event_date         DateTime
+  location           String
+  max_participants   Int
+  eventRegistrations EventRegistration[]
+
+  @@map("events")
+}
+
+// 'registered' 'attended' 'cancelled'
+
+enum EventRegistrationStatus {
+  REGISTERED @map("registered")
+  ATTENDED   @map("attended")
+  CANCELLED  @map("cancelled")
+}
+
+model EventRegistration {
+  id                Int                     @id @default(autoincrement())
+  Event             Event?                  @relation(fields: [eventId], references: [id])
+  eventId           Int?
+  User              User?                   @relation(fields: [userId], references: [id])
+  userId            Int?
+  registration_date DateTime                @default(now())
+  update_date       DateTime                @updatedAt
+  status            EventRegistrationStatus
+
+  @@map("event_registration")
+}
