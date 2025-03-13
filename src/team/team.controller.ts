@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   UseGuards,
+  Query,
 } from "@nestjs/common";
 import { TeamService } from "./team.service";
 import { CreateTeamDto, UpdateTeamDto } from "./dto";
@@ -32,6 +33,14 @@ export class TeamController {
   @Get()
   findAll() {
     return this.teamService.findAll();
+  }
+
+  @HttpCode(200)
+  @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
+  @UseGuards(RolesGuard)
+  @Get("top-skill-scores")
+  findTopSkillScores() {
+    return this.teamService.findTopSkillScores();
   }
 
   @HttpCode(200)

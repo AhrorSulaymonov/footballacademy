@@ -19,6 +19,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { Roles } from "../common/decorators/roles-auth.decorator";
 import { JwtSelfGuard, RolesGuard } from "../common/guards";
+import { UpdateUserPasswordDto } from "./dto";
 
 @ApiTags("User")
 @Controller("user")
@@ -155,5 +156,20 @@ export class UserController {
   @Get("activate/:link")
   activate(@Param("link") link: string) {
     return this.userService.activate(link);
+  }
+
+  @Patch(":id/password")
+  @HttpCode(200)
+  @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
+  @UseGuards(RolesGuard, JwtSelfGuard)
+  async updatePassword(
+    @Param("id") id: string,
+    @Body() updatePasswordDto: UpdateUserPasswordDto
+  ) {
+    const userId = parseInt(id, 10);
+    if (isNaN(userId)) {
+      throw new BadRequestException("ID noto‘g‘ri formatda!");
+    }
+    return this.userService.updatePassword(userId, updatePasswordDto);
   }
 }

@@ -2,13 +2,14 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import { FileAmazonService } from "../file-amazon/file-amazon.service";
 import { Admin } from "@prisma/client";
-import { CreateAdminDto, UpdateAdminDto } from "./dto";
+import { CreateAdminDto, UpdateAdminDto, UpdatePasswordDto } from "./dto";
 
 @Injectable()
 export class AdminService {
@@ -101,5 +102,80 @@ export class AdminService {
 
   remove(id: number) {
     return this.prismaService.admin.delete({ where: { id } });
+  }
+
+  async updatePassword(id: number, updatePasswordDto: UpdatePasswordDto) {
+    try {
+      // Admin mavjudligini tekshiramiz
+      const admin = await this.prismaService.admin.findUnique({
+        where: { id },
+      });
+
+      if (!admin) {
+        throw new NotFoundException("Admin topilmadi");
+      }
+
+      // Eski parolni tekshirish
+      const isPasswordValid = await bcrypt.compare(
+        updatePasswordDto.oldPassword,
+        admin.password_hash
+      );
+
+      if (!isPasswordValid) {
+        throw new NotFoundException("Eski parol noto'g'ri");
+      }
+
+      // Yangi parol bilan tasdiqlash parolini solishtirish
+      if (
+        updatePasswordDto.newPassword !== updatePasswordDto.confirmNewPassword
+      ) {
+        throw new NotFoundException("Yangi parollar mos kelmaydi");
+      }
+
+      // Eski parol bilan yangi parolni solishtirish
+      const isSameAsOld = await bcrypt.compare(
+        updatePasswordDto.newPassword,
+        admin.password_hash
+      );
+      if (isSameAsOld) {
+        throw new NotFoundException(
+          "Yangi parol eski paroldan farqli bo'lishi kerak"
+        );
+      }
+
+      // Yangi parolni hash qilish
+      const hashedPassword = await bcrypt.hash(
+        updatePasswordDto.newPassword,
+        10
+      );
+
+      // Admin parolini yangilash
+      const updatedAdmin = await this.prismaService.admin.update({
+        where: { id },
+        data: {
+          password_hash: hashedPassword,
+        },
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          phone: true,
+          username: true,
+          email: true,
+          is_creator: true,
+          image_url: true,
+        },
+      });
+
+      return {
+        message: "Parol muvaffaqiyatli yangilandi",
+        data: updatedAdmin,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new NotFoundException("Parolni yangilashda xatolik yuz berdi");
+    }
   }
 }

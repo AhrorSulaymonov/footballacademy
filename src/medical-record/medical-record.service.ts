@@ -45,7 +45,7 @@ export class MedicalRecordService {
           ...updateMedicalRecordDto,
           diagnosis_date: updateMedicalRecordDto.diagnosis_date
             ? new Date(updateMedicalRecordDto.diagnosis_date)
-            : undefined, // agar qiymat kelmasa, eski qiymati saqlanadi
+            : undefined,
         },
         include: {
           Player: true,
@@ -59,5 +59,39 @@ export class MedicalRecordService {
   async remove(id: number) {
     await this.findOne(id);
     return this.prismaService.medicalRecord.delete({ where: { id } });
+  }
+
+  async getActiveInjuries() {
+    try {
+      const result = await this.prismaService.$queryRaw<
+        {
+          player_name: string;
+          injury_type: string;
+          diagnosis_date: Date;
+          doctor_notes: string;
+        }[]
+      >`
+        SELECT 
+          u.first_name || ' ' || COALESCE(u.last_name, '') AS player_name,
+          mr.injury_type,
+          mr.diagnosis_date,
+          mr.doctor_notes
+        FROM 
+          medical_records mr
+        JOIN 
+          players p ON mr."playerId" = p.id
+        JOIN 
+          users u ON p."userId" = u.id
+        WHERE 
+          mr.recovery_status = 'active'
+        ORDER BY 
+          mr.diagnosis_date DESC;
+      `;
+      return result;
+    } catch (error) {
+      throw new NotFoundException(
+        "Faol jarohatlarni olishda xatolik yuz berdi"
+      );
+    }
   }
 }

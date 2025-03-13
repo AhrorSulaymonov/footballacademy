@@ -16,7 +16,7 @@ import {
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { SignupAdminDto, SignInAdminDto } from "../admin/dto";
+import { SignupAdminDto, SignInAdminDto, CreateAdminDto } from "../admin/dto";
 import { Response } from "express";
 import { GetCurrentUserId } from "../common/decorators/get-current-user-id.decorator";
 import { CookieGetter } from "../common/decorators/cookie-getter.decorator";
@@ -36,8 +36,8 @@ import { GetCurrentUser } from "../common/decorators/get-current-user.decorator"
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(JwtCreatorGuard)
-  @UseGuards(AccessTokenAdminGuard)
+  // @UseGuards(JwtCreatorGuard)
+  // @UseGuards(AccessTokenAdminGuard)
   @Post("signup-admin")
   @UseInterceptors(
     FileInterceptor("image", {
@@ -60,7 +60,7 @@ export class AuthController {
     })
   )
   async signUpAdmin(
-    @Body() createAdminDto: SignupAdminDto,
+    @Body() createAdminDto: CreateAdminDto,
     @UploadedFile() image: Express.Multer.File
   ) {
     return this.authService.signUpAdmin(createAdminDto, image);
@@ -137,7 +137,6 @@ export class AuthController {
     return this.authService.refreshTokenAdmin(userId, refreshToken, res);
   }
 
-  @UseGuards(JwtSelfGuard)
   @UseGuards(RefreshTokenGuard)
   @Post("signout")
   @HttpCode(HttpStatus.OK)
@@ -149,7 +148,6 @@ export class AuthController {
     return this.authService.signOut(+userId, res);
   }
 
-  @UseGuards(JwtSelfGuard)
   @UseGuards(RefreshTokenGuard)
   @HttpCode(200)
   @Post("refresh")

@@ -68,4 +68,33 @@ export class TeamService {
     await this.findOne(id);
     return this.prismaService.team.delete({ where: { id } });
   }
+
+  async findTopSkillScores() {
+    try {
+      const result = await this.prismaService.$queryRaw<
+        { team_name: string; avg_skill_score: number }[]
+      >`
+        SELECT 
+          t.name AS team_name,
+          AVG(se.score) AS avg_skill_score
+        FROM 
+          teams t
+        JOIN 
+          players p ON p."teamId" = t.id
+        JOIN 
+          skill_evaluations se ON se."playerId" = p.id
+        GROUP BY 
+          t.name
+        HAVING 
+          COUNT(se.score) > 0
+        ORDER BY 
+          avg_skill_score DESC;
+      `;
+      return result;
+    } catch (error) {
+      throw new Error(
+        "Jamoalarning o'rtacha malaka baholarini olishda xatolik yuz berdi"
+      );
+    }
+  }
 }

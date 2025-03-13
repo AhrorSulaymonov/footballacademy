@@ -64,4 +64,31 @@ export class AttendanceService {
     await this.findOne(id);
     return this.prismaService.attendance.delete({ where: { id } });
   }
+
+  async getPlayerAttendance() {
+    try {
+      const result = await this.prismaService.$queryRaw<
+        { player_name: string; attendance_percentage: number }[]
+      >`
+        SELECT 
+          u.first_name || ' ' || COALESCE(u.last_name, '') AS player_name,
+          COUNT(CASE WHEN a.status = 'present' THEN 1 END) * 100.0 / COUNT(*) AS attendance_percentage
+        FROM 
+          attendances a
+        JOIN 
+          players p ON a."playerId" = p.id
+        JOIN 
+          users u ON p."userId" = u.id
+        GROUP BY 
+          u.first_name, u.last_name
+        ORDER BY 
+          attendance_percentage DESC;
+      `;
+      return result;
+    } catch (error) {
+      throw new NotFoundException(
+        "O'yinchilar qatnashish foizini olishda xatolik yuz berdi"
+      );
+    }
+  }
 }

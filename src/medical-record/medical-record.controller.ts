@@ -37,6 +37,14 @@ export class MedicalRecordController {
   @HttpCode(200)
   @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
   @UseGuards(RolesGuard)
+  @Get("active-injuries")
+  getActiveInjuries() {
+    return this.medicalRecordService.getActiveInjuries();
+  }
+
+  @HttpCode(200)
+  @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
+  @UseGuards(RolesGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.medicalRecordService.findOne(+id);

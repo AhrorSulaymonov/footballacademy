@@ -5,7 +5,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { SignupAdminDto, SignInAdminDto } from "../admin/dto";
+import { SignupAdminDto, SignInAdminDto, CreateAdminDto } from "../admin/dto";
 import { AdminService } from "../admin/admin.service";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "../prisma/prisma.service";
@@ -27,7 +27,7 @@ export class AuthService {
   ) {}
 
   async signUpAdmin(
-    createAdminDto: SignupAdminDto,
+    createAdminDto: CreateAdminDto,
     image: Express.Multer.File
   ) {
     const candidate = await this.adminService.findAdminByEmail(
@@ -51,7 +51,7 @@ export class AuthService {
     const newUser = await this.userService.create(createUserDto, image);
     const response = {
       message: "Tabriklayman tizimga qo'shildingiz",
-      adminId: newUser.id,
+      userId: newUser.id,
     };
     return response;
   }

@@ -14,6 +14,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { Tokens } from "../common/types";
 import * as uuid from "uuid";
 import { MailService } from "../mail/mail.service";
+import { UpdateUserPasswordDto } from "./dto";
 
 @Injectable()
 export class UserService {
@@ -172,7 +173,6 @@ export class UserService {
         try {
           await this.mailService.sendMail(user);
         } catch (error) {
-
           throw new InternalServerErrorException("Xat yuborishda xatolik");
         }
         return user;
@@ -299,5 +299,44 @@ export class UserService {
     } catch (error) {
       throw new BadRequestException("User already activated or not found");
     }
+  }
+
+  async updatePassword(id: number, updatePasswordDto: UpdateUserPasswordDto) {
+    const { old_password, new_password, confirm_new_password } =
+      updatePasswordDto;
+
+    // 1. Foydalanuvchini topish
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException("Foydalanuvchi topilmadi");
+    }
+
+    // 2. Eski parolni tekshirish
+    const passwordMatches = await bcrypt.compare(
+      old_password,
+      user.password_hash
+    );
+    if (!passwordMatches) {
+      throw new BadRequestException("Eski parol noto‘g‘ri");
+    }
+
+    // 3. Yangi parollar mosligini tekshirish
+    if (new_password !== confirm_new_password) {
+      throw new BadRequestException("Yangi parollar mos emas");
+    }
+
+    // 4. Yangi parolni hash qilish
+    const newHashedPassword = await bcrypt.hash(new_password, 7);
+
+    // 5. Parolni yangilash
+    await this.prismaService.user.update({
+      where: { id },
+      data: { password_hash: newHashedPassword },
+    });
+
+    return { message: "Parol muvaffaqiyatli yangilandi" };
   }
 }

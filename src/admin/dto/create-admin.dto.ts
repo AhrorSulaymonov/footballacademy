@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
+  IsStrongPassword,
 } from "class-validator";
 
 export class CreateAdminDto {
@@ -46,7 +47,7 @@ export class CreateAdminDto {
   readonly email: string;
 
   @ApiProperty({ example: "StrongPassword123!", description: "Admin paroli" })
-  @IsString()
+  @IsStrongPassword()
   @IsNotEmpty()
   readonly password: string;
 

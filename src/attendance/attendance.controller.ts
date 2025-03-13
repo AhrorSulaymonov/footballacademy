@@ -37,6 +37,14 @@ export class AttendanceController {
   @HttpCode(200)
   @Roles("COACH", "ADMIN")
   @UseGuards(RolesGuard)
+  @Get("player-attendance")
+  getPlayerAttendance() {
+    return this.attendanceService.getPlayerAttendance();
+  }
+
+  @HttpCode(200)
+  @Roles("COACH", "ADMIN")
+  @UseGuards(RolesGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.attendanceService.findOne(+id);

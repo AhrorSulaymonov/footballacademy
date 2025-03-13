@@ -21,7 +21,7 @@ export class CreateCoachDto {
   license_number: string;
 
   @ApiProperty({
-    example: "GOALKEEPER",
+    example: "GOALKEEPING_COACH",
     description: "Mutaxassislik => GOALKEEPER, DEFENDER, MIDFIELD, FORWARD",
     enum: CoachSpecialization,
   })

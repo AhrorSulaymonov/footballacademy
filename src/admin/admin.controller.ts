@@ -10,12 +10,18 @@ import {
   BadRequestException,
   UploadedFile,
   UseGuards,
+  Put,
 } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { CreateAdminDto, UpdateAdminDto } from "./dto";
-import { AccessTokenAdminGuard, JwtCreatorGuard } from "../common/guards";
+import { CreateAdminDto, UpdateAdminDto, UpdatePasswordDto } from "./dto";
+import {
+  AccessTokenAdminGuard,
+  JwtCreatorGuard,
+  RolesGuard,
+} from "../common/guards";
 import { JwtSelfAdminGuard } from "../common/guards/jwt-self-admin.guard";
+import { Roles } from "../common/decorators/roles-auth.decorator";
 
 @Controller("admin")
 export class AdminController {
@@ -75,5 +81,16 @@ export class AdminController {
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.adminService.remove(+id);
+  }
+
+  @UseGuards(JwtSelfAdminGuard)
+  @Roles("ADMIN")
+  @UseGuards(RolesGuard)
+  @Put("update-password/:id")
+  updatePassword(
+    @Param("id") id: string,
+    @Body() updatePasswordDto: UpdatePasswordDto
+  ) {
+    return this.adminService.updatePassword(+id, updatePasswordDto);
   }
 }
