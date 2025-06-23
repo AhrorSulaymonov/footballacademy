@@ -12,7 +12,7 @@ export class MailService {
       template: "./confirm", // templates/confirm.hbs bo‘lishi kerak
       context: {
         name: user.first_name,
-        url: `http://localhost:3000/api/user/activate/${user.verification}`,
+        url: `http://localhost:3005/api/user/activate/${user.verification}`,
       },
     });
   }

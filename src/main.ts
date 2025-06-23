@@ -19,7 +19,18 @@ async function bootstrap() {
       .setTitle("Football academy API")
       .setDescription("Football academy API documentation")
       .setVersion("1.0")
-      .addBearerAuth()
+      .addBearerAuth(
+        // <-- O'ZGARTIRILGAN QISM BOSHLANISHI
+        {
+          type: "http", // Autentifikatsiya turi
+          scheme: "bearer", // Sxema nomi (Bearer token uchun)
+          bearerFormat: "JWT", // Token formati
+          name: "JWT Authorization", // Swagger UI da ko'rinadigan nom
+          description: "Iltimos, JWT tokeningizni kiriting", // Tavsif
+          in: "header", // Token qayerda joylashishi (headerda)
+        },
+        "access-token" // Bu KEY @ApiBearerAuth('access-token') dekoratorida ishlatiladi
+      ) // <-- O'ZGARTIRILGAN QISM TUGASHI
       .addServer("/api") // API prefiksini qo‘shish
       .build();
 
