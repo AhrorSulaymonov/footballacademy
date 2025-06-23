@@ -1,13 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
+import { Transform } from "class-transformer"; // Bu DTO da ishlatilmayapti, olib tashlasa bo'ladi
 import {
-  IsBoolean,
+  // IsBoolean, // Bu DTO da ishlatilmayapti
   IsEmail,
   IsNotEmpty,
-  IsNumber,
+  // IsNumber, // Bu DTO da ishlatilmayapti
   IsOptional,
   IsPhoneNumber,
   IsString,
+  IsStrongPassword, // <-- QO'SHILDI: Signup uchun ham kuchli parol talabi
 } from "class-validator";
 
 export class SignupAdminDto {
@@ -46,7 +47,7 @@ export class SignupAdminDto {
   readonly email: string;
 
   @ApiProperty({ example: "StrongPassword123!", description: "Admin paroli" })
-  @IsString()
+  @IsStrongPassword() // <-- QO'SHILDI
   @IsNotEmpty()
   readonly password: string;
 
@@ -57,4 +58,14 @@ export class SignupAdminDto {
   @IsString()
   @IsNotEmpty()
   readonly confirm_password: string;
+
+  @ApiProperty({
+    // <-- RASM UCHUN QO'SHILDI (majburiy deb belgilandi)
+    type: "string",
+    format: "binary",
+    description: "Adminning profil rasmi (majburiy)",
+    required: true,
+  })
+  @IsNotEmpty() // Agar rasm majburiy bo'lsa, class-validator uchun
+  readonly image: any; // Fayllar uchun 'any' yoki Express.Multer.File tipi ishlatiladi
 }

@@ -43,8 +43,7 @@ export class CreateAdminDto {
     description: "Adminning emaili",
   })
   @IsEmail()
-  // @IsNotEmpty() // Agar email ixtiyoriy bo'lsa, buni olib tashlang yoki @IsOptional qo'shing. Hozircha qoldiramiz.
-  readonly email: string; // Agar IsNotEmpty qolsa, readonly email!: string; bo'lishi mumkin.
+  readonly email: string;
 
   @ApiProperty({ example: "StrongPassword123!", description: "Admin paroli" })
   @IsStrongPassword()
@@ -62,15 +61,25 @@ export class CreateAdminDto {
   @ApiPropertyOptional({
     example: true,
     description: "Admin yaratgan foydalanuvchi ekanligini bildiradi",
-    type: Boolean, // <-- Swagger uchun tipni aniq ko'rsatish
+    type: Boolean,
   })
   @IsBoolean()
   @Transform(({ value }) => {
-    // string "true"/"false" ni boolean ga o'tkazish
     if (value === "true") return true;
     if (value === "false") return false;
     return value;
   })
   @IsOptional()
   readonly is_creator?: boolean;
+
+  @ApiPropertyOptional({
+    // <-- RASM UCHUN QO'SHILDI
+    type: "string",
+    format: "binary",
+    description: "Adminning profil rasmi (ixtiyoriy)",
+    required: false, // Agar rasm majburiy bo'lsa, buni olib tashlang yoki true qiling
+  })
+  @IsOptional() // Agar rasm ixtiyoriy bo'lsa
+  // @IsNotEmpty() // Agar rasm majburiy bo'lsa, class-validator uchun
+  readonly image?: any; // Fayllar uchun 'any' yoki Express.Multer.File tipi ishlatiladi, lekin DTO da 'any' qulayroq
 }
