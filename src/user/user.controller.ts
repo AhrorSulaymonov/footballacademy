@@ -61,6 +61,8 @@ export class UserController {
     return this.userService.create(createUserDto, image);
   }
 
+  @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
+  @UseGuards(RolesGuard, JwtSelfGuard)
   @Patch(":id/image")
   @ApiConsumes("multipart/form-data")
   @ApiBody({

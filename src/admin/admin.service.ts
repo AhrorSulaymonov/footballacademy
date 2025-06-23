@@ -146,7 +146,7 @@ export class AdminService {
       // Yangi parolni hash qilish
       const hashedPassword = await bcrypt.hash(
         updatePasswordDto.newPassword,
-        10
+        7
       );
 
       // Admin parolini yangilash

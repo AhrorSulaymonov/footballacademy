@@ -169,7 +169,7 @@ export class UserService {
             coach: role === "COACH",
           },
         });
-
+        
         try {
           await this.mailService.sendMail(user);
         } catch (error) {

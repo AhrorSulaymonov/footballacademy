@@ -29,7 +29,7 @@ export class PlayerController {
   }
 
   @HttpCode(200)
-  @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
+  @Roles("ADMIN", "COACH")
   @UseGuards(RolesGuard)
   @Get()
   findAll() {
@@ -37,7 +37,7 @@ export class PlayerController {
   }
 
   @HttpCode(200)
-  @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
+  @Roles("ADMIN", "COACH")
   @UseGuards(RolesGuard)
   @Get("top-goals")
   findTopGoalScorers(@Query("limit") limit?: string) {
@@ -45,7 +45,7 @@ export class PlayerController {
   }
 
   @HttpCode(200)
-  @Roles("ADMIN", "COACH", "PARENT", "PLAYER")
+  @Roles("ADMIN", "COACH")
   @UseGuards(RolesGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {

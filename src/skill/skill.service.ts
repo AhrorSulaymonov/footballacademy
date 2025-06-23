@@ -7,12 +7,7 @@ export class SkillService {
   constructor(private readonly prismaService: PrismaService) {}
 
   create(createSkillDto: CreateSkillDto) {
-    return this.prismaService.skill.create({
-      data: createSkillDto,
-      include: {
-        SkillCategory: true,
-      },
-    });
+    
   }
 
   findAll() {

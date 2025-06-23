@@ -1,0 +1,179 @@
+**Futbol Akademiyasi Boshqaruv Tizimi Foydalanuvchi Qoʻllanmasi**  
+*Versiya 1.0 | 2024-yil*  
+
+---
+
+### **Mundarija**  
+1. Kirish  
+2. Tizimga Kirish  
+   - 2.1. Roʻyxatdan oʻtish (Adminlar uchun)  
+   - 2.2. Tizimga kirish  
+3. Admin Panel  
+   - 3.1. Yangi foydalanuvchi qoʻshish  
+   - 3.2. Tadbirlarni boshqarish  
+4. Murabbiylar uchun Qoʻllanma  
+   - 4.1. Mashgʻulot rejalashtirish  
+   - 4.2. Oʻyinchi mahoratini baholash  
+5. Ota-onalar uchun Qoʻllanma  
+   - 5.1. Oʻyinchi maʼlumotlarini koʻrish  
+   - 5.2. Shikoyat yuborish  
+6. Oʻyinchilar uchun Qoʻllanma  
+   - 6.1. Shaxsiy profil  
+   - 6.2. Mashgʻulot videolari  
+7. Tibbiy Xodimlar uchun Qoʻllanma  
+   - 7.1. Yangi tibbiy yozuv  
+8. Jihozlar Boshqaruvi  
+   - 8.1. Inventarizatsiya  
+9. Tez-tez Beriladigan Savollar (FAQ)  
+10. Texnik Yordam  
+
+---
+
+### **1. Kirish**  
+Ushbu tizim futbol akademiyasining quyidagi jarayonlarini avtomatlashtirishga yordam beradi:  
+- Oʻyinchilarning shaxsiy va statistik maʼlumotlari  
+- Mashgʻulotlar, oʻyinlar va tadbirlarni rejalashtirish  
+- Tibbiy yozuvlar va jihozlar inventarizatsiyasi  
+
+---
+
+### **2. Tizimga Kirish**  
+
+#### **2.1. Roʻyxatdan oʻtish (Adminlar uchun)**  
+1. [Akademiya veb-sayti](https://academy.uz) ga kirish.  
+2. **"Roʻyxatdan oʻtish"** tugmasini bosing.  
+3. Quyidagi maʼlumotlarni toʻldiring:  
+   - **Ism va Familiya**:  
+   - **Elektron pochta**:  
+   - **Telefon raqami**:  
+   - **Parol** (kamida 8 belgi, raqam va katta harf):  
+4. **"Yuborish"** tugmasini bosish.  
+5. Elektron pochtangizga kelgan **tasdiqlash havolasi** orqali akkauntingizni faollashtiring.  
+
+#### **2.2. Tizimga kirish**  
+1. **Email** va **parol**ni kiriting.  
+2. **"Kirish"** tugmasini bosish.  
+
+---
+
+### **3. Admin Panel**  
+
+#### **3.1. Yangi foydalanuvchi qoʻshish**  
+1. **"Foydalanuvchilar"** → **"Yangi"** tugmasini bosing.  
+2. Quyidagilarni tanlang/toʻldiring:  
+   - **Rol**: Murabbiy, Ota-ona, Oʻyinchi  
+   - **Ism**:  
+   - **Telefon**:  
+   - **Lavozim** (murabbiylar uchun):  
+3. **"Saqlash"** tugmasini bosish.  
+
+#### **3.2. Tadbirlarni boshqarish**  
+1. **"Tadbirlar"** → **"Yangi tadbir"**.  
+2. Maʼlumotlarni kiriting:  
+   - **Sarlavha**:  
+   - **Sana va vaqt**:  
+   - **Manzil**:  
+   - **Izoh**:  
+
+---
+
+### **4. Murabbiylar uchun Qoʻllanma**  
+
+#### **4.1. Mashgʻulot rejalashtirish**  
+1. **"Mashgʻulotlar"** → **"Yangi"**.  
+2. Toʻldiring:  
+   - **Jamoa**: U-14, U-16, U-18  
+   - **Davomiylik**: 90 daqiqa  
+   - **Maqsad**: "Toʻp nazorati"  
+
+#### **4.2. Oʻyinchi mahoratini baholash**  
+1. Oʻyinchining profiliga kirish.  
+2. **"Baholash"** → **"Yangi test"**.  
+3. Baholash parametrlari:  
+   - **Mahorat turi**: Dribling  
+   - **Ball**: 8/10  
+   - **Izoh**: "Tezlikni yaxshilash kerak"  
+
+---
+
+### **5. Ota-onalar uchun Qoʻllanma**  
+
+#### **5.1. Oʻyinchi maʼlumotlarini koʻrish**  
+1. **"Mening farzandim"** boʻlimiga kirish.  
+2. **"Statistika"** orqali:  
+   - Oʻyinlar soni  
+   - Gollar/assistlar  
+   - Mashgʻulotlarda ishtirok  
+
+#### **5.2. Shikoyat yuborish**  
+1. **"Aloqa"** → **"Xabar yuborish"**.  
+2. Xabarni yozing va **"Yuborish"** tugmasini bosing.  
+
+---
+
+### **6. Oʻyinchilar uchun Qoʻllanma**  
+
+#### **6.1. Shaxsiy profil**  
+- **Statistika**: Oʻyinlardagi koʻrsatkichlar.  
+- **Tibbiy yozuvlar**: Jarohatlar tarixi.  
+- **Badgeʼlar**: "Eng yaxshi himoyachi" kabi yutuqlar.  
+
+#### **6.2. Mashgʻulot videolarini koʻrish**  
+1. **"Videolar"** → **"Mashgʻulotlar"**.  
+2. Kerakli videoni tanlang.  
+
+---
+
+### **7. Tibbiy Xodimlar uchun Qoʻllanma**  
+
+#### **7.1. Yangi tibbiy yozuv**  
+1. **"Tibbiy yozuvlar"** → **"Yangi"**.  
+2. Toʻldiring:  
+   - **Oʻyinchi**:  
+   - **Tashxis**:  
+   - **Holat**: Faol/Yoqilgan  
+   - **Tavsiyalar**:  
+
+---
+
+### **8. Jihozlar Boshqaruvi**  
+
+#### **8.1. Inventarizatsiya**  
+1. **"Jihozlar"** → **"Yangi qoʻshish"**.  
+2. Maʼlumotlarni kiriting:  
+   - **Nomi**: Futbol formalari  
+   - **Soni**: 50  
+   - **Holati**: Yaxshi  
+
+---
+
+### **9. Tez-tez Beriladigan Savollar (FAQ)**  
+
+| **Savol** | **Javob** |  
+|-----------|-----------|  
+| Parolni qanday tiklash mumkin? | Kirish sahifasida **"Parolni tiklash"** tugmasini bosing. |  
+| Oʻyinchi statistikasini chop etish mumkinmi? | Ha, profilida **"PDF yuklash"** tugmasi mavjud. |  
+
+---
+
+### **10. Texnik Yordam**  
+Agar muammo yuzaga kelsa:  
+- **Email**: support@academy.uz  
+- **Telegram**: [@AcademySupportBot](https://t.me/AcademySupportBot)  
+- **Qoʻngʻiroq**: +998 (90) 123-45-67  
+
+---
+
+**Eslatma**: Barcha maʼlumotlar **RFC 8785** standarti asosida shifrlangan. Maʼlumotlarni maxfiyligini saqlang!  
+
+*© 2024 Futbol Akademiyasi. Barcha huquqlar himoyalangan.*  
+
+---
+
+**Word Formatda Sozlash Uchun:**  
+1. Ustunlar va jadvallarni Word jadval formatiga oʻtkazing.  
+2. Rasm joylariga skrinshotlar qoʻshing (masalan: tizimga kirish sahifasi).  
+3. Sarlavhalarni **Heading 1**, **Heading 2** stillari bilan belgilang.  
+4. Hyperlinklarni faollashtiring (masalan: support@academy.uz).  
+
+*Hujjatni yuklab olish uchun [bu havola](https://academy.uz/manual) dan foydalaning.*
